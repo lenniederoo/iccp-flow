@@ -44,9 +44,29 @@ def move(grid):
           grid[j,k,8]+=clonedgrid[(j-1)%(grid.shape[0]-1),k,4]
   return grid
   
-def update(grid):
-  grid=move(grid)
-  #grid=pressure(grid) ???
-  #grid=relax(grid)
+def update(grid,relaxt,pressgradvel):
+  grid=move(grid)  
+  grid=relax(grid,relaxt,pressgradvel)
   return grid
   
+def calc_velocity(grid):
+    velocity=np.zeros((grid.shape[0],grid.shape[1],2),dtype=float)
+    velocity[:,:,0]=grid[:,:,1]+0.5*np.sqrt(2)*(grid[:,:,2]+grid[:,:,8]-grid[:,:,4]-grid[:,:,6])-grid[:,:,5]    #x-direction
+    velocity[:,:,1]=grid[:,:,3]-grid[:,:,7]+0.5*np.sqrt(2)*(grid[:,:,2]+grid[:,:,4]-grid[:,:,6]-grid[:,:,8])    #y-direction
+    return velocity
+    
+def add_pressure_grad(grid,pressgradvel):
+    velocity=calc_velocity(grid)
+    velocity[:,:,0]+=pressgradvel
+    return velocity
+    
+def calc_eq(grid,pressgradvel):
+  velocity=add_pressure_grad(grid,pressgradvel)
+  grideq=grid  
+  return grideq
+  
+def relax(grid,relaxt,pressgradvel):
+    grideq=calc_eq(grid,pressgradvel)
+    grid=(1-(1/relaxt))*grid+grideq*(1/relaxt)
+    return grid
+    
