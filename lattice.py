@@ -52,13 +52,15 @@ def update(grid,relaxt,pressgradvel):
   
 def calc_velocity(grid):
     velocity=np.zeros((grid.shape[0],grid.shape[1],2),dtype=float)
-    velocity[:,:,0]=grid[:,:,1]+0.5*np.sqrt(2)*(grid[:,:,2]+grid[:,:,8]-grid[:,:,4]-grid[:,:,6])-grid[:,:,5]    #x-direction
-    velocity[:,:,1]=grid[:,:,3]-grid[:,:,7]+0.5*np.sqrt(2)*(grid[:,:,2]+grid[:,:,4]-grid[:,:,6]-grid[:,:,8])    #y-direction
+    velocity[:,:,0]=(1/np.sum(grid,axis=2))*(grid[:,:,1]+0.5*np.sqrt(2)*(grid[:,:,2]+grid[:,:,8]-grid[:,:,4]-grid[:,:,6])-grid[:,:,5])    #x-direction
+    velocity[:,:,1]=(1/np.sum(grid,axis=2))*(grid[:,:,3]-grid[:,:,7]+0.5*np.sqrt(2)*(grid[:,:,2]+grid[:,:,4]-grid[:,:,6]-grid[:,:,8]))    #y-direction
+    print 'x',velocity[:,:,0]
+    print 'y',velocity[:,:,1]
     return velocity
     
 def add_pressure_grad(grid,pressgradvel):
     velocity=calc_velocity(grid)
-    velocity[:,:,0]+=pressgradvel
+    #velocity[:,:,0]+=pressgradvel
     return velocity
     
 def calc_eq(grid,pressgradvel):
@@ -107,5 +109,6 @@ def calc_eq(grid,pressgradvel):
 def relax(grid,relaxt,pressgradvel):
     grideq=calc_eq(grid,pressgradvel)
     grid=(1-(1/relaxt))*grid+grideq*(1/relaxt)
+    print 'grid',grid
     return grid
     
