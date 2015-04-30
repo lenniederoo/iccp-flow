@@ -23,25 +23,25 @@ def move(grid):
           grid[j,k,7]+=clonedgrid[j,k+1,7]
           grid[j,k,8]+=clonedgrid[(j-1)%(grid.shape[0]-1),k+1,8]
         elif k==0:
-          grid[j,k,0]+=clonedgrid[j,k,0]
-          grid[j,k,1]+=clonedgrid[(j-1)%(grid.shape[0]-1),k,1]
-          grid[j,k,2]+=clonedgrid[(j-1)%(grid.shape[0]-1),k,6]
-          grid[j,k,3]+=clonedgrid[j,k,7]
-          grid[j,k,4]+=clonedgrid[(j+1)%(grid.shape[0]-1),k,8]
-          grid[j,k,5]+=clonedgrid[(j+1)%(grid.shape[0]-1),k,5]
-          grid[j,k,6]+=clonedgrid[(j+1)%(grid.shape[0]-1),k+1,6]
-          grid[j,k,7]+=clonedgrid[j,k+1,7]
-          grid[j,k,8]+=clonedgrid[(j-1)%(grid.shape[0]-1),k+1,8]
+          grid[j,k,0]+=0
+          grid[j,k,1]+=0
+          grid[j,k,2]+=clonedgrid[(j+1)%(grid.shape[0]-1),k+1,6]
+          grid[j,k,3]+=clonedgrid[j,k+1,7]
+          grid[j,k,4]+=clonedgrid[(j-1)%(grid.shape[0]-1),k+1,8]
+          grid[j,k,5]+=0
+          grid[j,k,6]+=0
+          grid[j,k,7]+=0
+          grid[j,k,8]+=0
         else:
-          grid[j,k,0]+=clonedgrid[j,k,0]
-          grid[j,k,1]+=clonedgrid[(j-1)%(grid.shape[0]-1),k,1]
-          grid[j,k,2]+=clonedgrid[(j-1)%(grid.shape[0]-1),k-1,2]
-          grid[j,k,3]+=clonedgrid[j,k-1,3]
-          grid[j,k,4]+=clonedgrid[(j+1)%(grid.shape[0]-1),k-1,4]
-          grid[j,k,5]+=clonedgrid[(j+1)%(grid.shape[0]-1),k,5]
-          grid[j,k,6]+=clonedgrid[(j+1)%(grid.shape[0]-1),k,2]
-          grid[j,k,7]+=clonedgrid[j,k,3]
-          grid[j,k,8]+=clonedgrid[(j-1)%(grid.shape[0]-1),k,4]
+          grid[j,k,0]+=0
+          grid[j,k,1]+=0
+          grid[j,k,2]+=0
+          grid[j,k,3]+=0
+          grid[j,k,4]+=0
+          grid[j,k,5]+=0
+          grid[j,k,6]+=clonedgrid[(j-1)%(grid.shape[0]-1),k-1,2]
+          grid[j,k,7]+=clonedgrid[j,k-1,3]
+          grid[j,k,8]+=clonedgrid[(j+1)%(grid.shape[0]-1),k-1,4]
   return grid
   
 def update(grid,relaxt,pressgradvel):
@@ -62,7 +62,45 @@ def add_pressure_grad(grid,pressgradvel):
     
 def calc_eq(grid,pressgradvel):
   velocity=add_pressure_grad(grid,pressgradvel)
-  grideq=grid  
+  grideq=np.zeros(grid.shape,dtype=float)
+  for i in xrange(0,9):
+      if i==0:
+          w=4/9.0
+          ea=0
+          eb=0
+      elif i==2:
+           w=1.0/9
+           ea=1
+           eb=1
+      elif i==4:
+          w=1.0/9
+          ea=-1
+          eb=1
+      elif i==6:
+          w=1.0/9
+          ea=-1
+          eb=-1
+      elif i==8:
+          w=1.0/9
+          ea=1
+          eb=-1
+      elif i==1:
+          w=1.0/36
+          ea=1
+          eb=0
+      elif i==3:
+          w=1.0/36
+          ea=0
+          eb=1
+      elif i==5:
+          w=1.0/36
+          ea=-1
+          eb=0
+      elif i==7:
+          w=1.0/36
+          ea=0
+          eb=-1
+      grideq[:,:,i]=w*np.sum(grid,axis=2)*(1+3*ea*velocity[:,:,0]+9/2.0*ea*eb*velocity[:,:,0]*velocity[:,:,1]-3.0/2*velocity[:,:,0]*velocity[:,:,0])
   return grideq
   
 def relax(grid,relaxt,pressgradvel):
