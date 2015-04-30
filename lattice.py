@@ -60,55 +60,21 @@ def calc_velocity(grid):
     
 def add_pressure_grad(grid,pressgradvel):
     velocity=calc_velocity(grid)
-    #velocity[:,:,0]+=pressgradvel
+    velocity[:,:,0]+=pressgradvel
     return velocity
     
 def calc_eq(grid,pressgradvel):
   velocity=add_pressure_grad(grid,pressgradvel)
   grideq=np.zeros(grid.shape,dtype=float)
+  w=[4/9.0,1.0/36,1.0/9,1.0/36,1.0/9,1.0/36,1.0/9,1.0/36,1.0/9]
+  ea=[0,1,1,0,-1,-1,-1,0,1]
+  eb=[0,0,1,1,1,0,-1,-1,-1]
   for i in xrange(0,9):
-      if i==0:
-          w=4/9.0
-          ea=0
-          eb=0
-      elif i==2:
-           w=1.0/9
-           ea=1
-           eb=1
-      elif i==4:
-          w=1.0/9
-          ea=-1
-          eb=1
-      elif i==6:
-          w=1.0/9
-          ea=-1
-          eb=-1
-      elif i==8:
-          w=1.0/9
-          ea=1
-          eb=-1
-      elif i==1:
-          w=1.0/36
-          ea=1
-          eb=0
-      elif i==3:
-          w=1.0/36
-          ea=0
-          eb=1
-      elif i==5:
-          w=1.0/36
-          ea=-1
-          eb=0
-      elif i==7:
-          w=1.0/36
-          ea=0
-          eb=-1
-      grideq[:,:,i]=w*np.sum(grid,axis=2)*(1+3*ea*velocity[:,:,0]+9/2.0*ea*eb*velocity[:,:,0]*velocity[:,:,1]-3.0/2*velocity[:,:,0]*velocity[:,:,0])
+    grideq[:,:,i]=w[i]*np.sum(grid,axis=2)*(1+3*ea[i]*velocity[:,:,0]+9/2.0*ea[i]*eb[i]*velocity[:,:,0]*velocity[:,:,1]-3.0/2*velocity[:,:,0]*velocity[:,:,0])
   return grideq
   
 def relax(grid,relaxt,pressgradvel):
     grideq=calc_eq(grid,pressgradvel)
     grid=(1-(1/relaxt))*grid+grideq*(1/relaxt)
-    print 'grid',grid
     return grid
     
