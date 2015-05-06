@@ -10,5 +10,5 @@ relaxt=0.5
 
 grid=init_grid(Nxgrid,Nygrid,dens)
 for i in xrange(0,timesteps):
-  grid=update(grid,relaxt,pressgradvel)
+    grid=update(grid,relaxt,pressgradvel)
 print grid

@@ -1,6 +1,7 @@
 # Lattice movement
 import numpy as np
 import copy
+import matplotlib.pyplot as plt
 
 
 def init_grid(Nxgrid,Nygrid,dens):
@@ -56,6 +57,8 @@ def calc_velocity(grid):
     velocity[:,:,1]=(1/np.sum(grid,axis=2))*(grid[:,:,3]-grid[:,:,7]+0.5*np.sqrt(2)*(grid[:,:,2]+grid[:,:,4]-grid[:,:,6]-grid[:,:,8]))    #y-direction
     print 'x',velocity[:,:,0]
     print 'y',velocity[:,:,1]
+    plt.plot(velocity[50,:,0],np.arange(velocity.shape[1]))
+    plt.show()
     return velocity
     
 def add_pressure_grad(grid,pressgradvel):
