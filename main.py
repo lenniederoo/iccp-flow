@@ -3,9 +3,9 @@ print 'hello world'
 
 Nxgrid=100 #gridpoints x direction
 Nygrid=50  #gridpoints y direction
-dens=900
+dens=1
 timesteps=100
-pressgradvel=0.2
+pressgradvel=0.005
 relaxt=1.85
 
 grid=init_grid(Nxgrid,Nygrid,dens)

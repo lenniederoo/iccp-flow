@@ -57,23 +57,24 @@ def calc_velocity(grid):
     velocity[:,:,1]=(1/np.sum(grid,axis=2))*(grid[:,:,3]-grid[:,:,7]+(grid[:,:,2]+grid[:,:,4]-grid[:,:,6]-grid[:,:,8]))    #y-direction
     print 'x',velocity[:,:,0]
     print 'y',velocity[:,:,1]
-    plt.plot(velocity[50,:,0],np.arange(velocity.shape[1]))
+    plt.plot(velocity[50,:,0],np.arange(velocity.shape[1]),'r+')
     plt.show()
     return velocity
     
 def add_pressure_grad(grid,pressgradvel):
     velocity=calc_velocity(grid)
-    velocity[:,:,1:velocity.shape[1]-1]+=pressgradvel
+    velocity[:,1:velocity.shape[1]-1,0]+=pressgradvel
     return velocity
     
 def calc_eq(grid,pressgradvel):
   velocity=add_pressure_grad(grid,pressgradvel)
+  Velsqr=velocity[:,:,0]**2+velocity[:,:,1]**2
   grideq=np.zeros(grid.shape,dtype=float)
-  w=[4/9.0,1.0/36,1.0/9,1.0/36,1.0/9,1.0/36,1.0/9,1.0/36,1.0/9]
-  ea=[0,1,1,0,-1,-1,-1,0,1]
-  eb=[0,0,1,1,1,0,-1,-1,-1]
+  w= np.array([4./9, 1./9, 1./36, 1./9, 1./36, 1./9, 1./36, 1./9, 1./36])
+  e = np.array([[0,1,1,0,-1,-1,-1,0,1], [0,0,1,1,1,0,-1,-1,-1]])
+  Prod=np.dot(e.T,velocity.transpose(0,2,1))
   for i in xrange(0,9):
-    grideq[:,:,i]=w[i]*np.sum(grid,axis=2)*(1+3*ea[i]*velocity[:,:,0]+9/2.0*ea[i]*eb[i]*velocity[:,:,0]*velocity[:,:,1]-3.0/2*velocity[:,:,0]*velocity[:,:,0])
+    grideq[:,:,i]=w[i]*np.sum(grid,axis=2)*(1+3* Prod[i] + 9/2.0* Prod[i]**2 -3.0/2 * Velsqr)
   return grideq
   
 def relax(grid,relaxt,pressgradvel):
