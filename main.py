@@ -5,10 +5,10 @@ from pylab import *
 Nxgrid=100 #gridpoints x direction
 Nygrid=50  #gridpoints y direction
 dens=1
-timesteps=100
+timesteps=1000
 pressgradvel=0.005
-relaxt=1.85
-blocks = np.array([[40,20]]) # Adds 1 by 1 blocks on position [x,y]
+relaxt=3.3
+blocks = np.array([[40,20],[30,40],[10,10],[80,20]]) # Adds 1 by 1 blocks on position [x,y]
 e = np.array([[0,1,1,0,-1,-1,-1,0,1], [0,0,1,1,1,0,-1,-1,-1]])
 
 grid=init_grid(Nxgrid,Nygrid,dens,blocks)
