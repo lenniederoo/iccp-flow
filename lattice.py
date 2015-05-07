@@ -9,7 +9,7 @@ def init_grid(Nxgrid,Nygrid,dens):
   return grid
   
 def move(grid):
-  print 'moving'
+#  print 'moving'
   clonedgrid=copy.deepcopy(grid)
   grid=np.zeros(clonedgrid.shape,dtype=float)
   for j in xrange(0,grid.shape[0]):
@@ -55,10 +55,10 @@ def calc_velocity(grid):
     velocity=np.zeros((grid.shape[0],grid.shape[1],2),dtype=float)
     velocity[:,:,0]=(1/np.sum(grid,axis=2))*(grid[:,:,1]+(grid[:,:,2]+grid[:,:,8]-grid[:,:,4]-grid[:,:,6])-grid[:,:,5])    #x-direction
     velocity[:,:,1]=(1/np.sum(grid,axis=2))*(grid[:,:,3]-grid[:,:,7]+(grid[:,:,2]+grid[:,:,4]-grid[:,:,6]-grid[:,:,8]))    #y-direction
-    print 'x',velocity[:,:,0]
-    print 'y',velocity[:,:,1]
-    plt.plot(velocity[50,:,0],np.arange(velocity.shape[1]),'r+')
-    plt.show()
+#    print 'x',velocity[:,:,0]
+#    print 'y',velocity[:,:,1]
+#    plt.plot(velocity[50,:,0],np.arange(velocity.shape[1]),'r+')
+#    plt.show()
     return velocity
     
 def add_pressure_grad(grid,pressgradvel):
