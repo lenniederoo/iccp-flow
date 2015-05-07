@@ -9,17 +9,19 @@ def init_grid(Nxgrid,Nygrid,dens,blocks):
     grid[blocks[i,0],blocks[i,1],:]=0
   return grid
 
-def move(grid,e):
+def move(grid,blocks,e):
   for i in range(9):
     grid[:,:,i]=np.roll(np.roll(grid[:,:,i],e[0,i],axis=0),e[1,i],axis=1)
   clonedgrid=copy.deepcopy(grid)
   for i in range(9):
-    grid[:,0,i]=clonedgrid[:,0,((i+3)%8) +1]
-    grid[:,grid.shape[1]-1,i]=clonedgrid[:,grid.shape[1]-1,((i+3)%8) +1]
+    for j in range(len(blocks)):
+      grid[:,0,i]=clonedgrid[:,0,((i+3)%8) +1]
+      grid[:,grid.shape[1]-1,i]=clonedgrid[:,grid.shape[1]-1,((i+3)%8) +1]
+      grid[blocks[j,0],blocks[j,1],i]=clonedgrid[blocks[j,0],blocks[j,1],((i+3)%8) +1]
   return grid  
   
 def update(grid,relaxt,pressgradvel,blocks,e):
-  grid=move(grid,e)  
+  grid=move(grid,blocks,e)  
   grid=relax(grid,relaxt,pressgradvel,blocks,e)
   return grid
   
