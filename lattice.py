@@ -6,10 +6,7 @@ import copy
 def init_grid(Nxgrid,Nygrid,dens,blocks,bigblocks):
   grid=np.ones((Nxgrid,Nygrid,9),dtype=float)*dens/9
   for i in range (len(bigblocks)):
-    grid[bigblocks[i,0],bigblocks[i,2]:bigblocks[i,3],:]=0
-    grid[bigblocks[i,1],bigblocks[i,2]:bigblocks[i,3],:]=0
-    grid[bigblocks[i,0]:bigblocks[i,1],bigblocks[i,2],:]=0
-    grid[bigblocks[i,0]:bigblocks[i,1],bigblocks[i,3],:]=0
+    grid[bigblocks[i,0]:bigblocks[i,1],bigblocks[i,2]:bigblocks[i,3],:]=0
   for i in range (len(blocks)):
     grid[blocks[i,0],blocks[i,1],:]=0
   return grid
@@ -32,14 +29,18 @@ def update(grid,relaxt,pressgradvel,blocks,bigblocks,e):
   grid=relax(grid,relaxt,pressgradvel,blocks,bigblocks,e)
   return grid
   
-def calc_velocity(grid):
+def calc_velocity(grid,blocks,bigblocks):
     velocity=np.zeros((grid.shape[0],grid.shape[1],2),dtype=float)
     velocity[:,:,0]=(1/np.sum(grid,axis=2))*(grid[:,:,1]+(grid[:,:,2]+grid[:,:,8]-grid[:,:,4]-grid[:,:,6])-grid[:,:,5])    #x-direction
     velocity[:,:,1]=(1/np.sum(grid,axis=2))*(grid[:,:,3]-grid[:,:,7]+(grid[:,:,2]+grid[:,:,4]-grid[:,:,6]-grid[:,:,8]))    #y-direction
+    for i in xrange(0,len(bigblocks)):
+      velocity[bigblocks[i,0]:bigblocks[i,1],bigblocks[i,2]:bigblocks[i,3],:]=0
+    for i in xrange(0,len(blocks)):
+      velocity[blocks[i,0],[i,1]]=0
     return velocity
     
 def add_pressure_grad(grid,pressgradvel,blocks,bigblocks):
-    velocity=calc_velocity(grid)
+    velocity=calc_velocity(grid,blocks,bigblocks)
     velocity[:,1:velocity.shape[1]-1,0]+=pressgradvel
     for p in range (len(blocks)):  
       velocity[blocks[p,0],blocks[p,1],0]-=pressgradvel

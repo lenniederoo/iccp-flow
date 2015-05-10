@@ -9,14 +9,14 @@ timesteps=1000
 pressgradvel=0.005
 relaxt=4.2
 blocks = np.array([[30,30],[60,40],[80,20]]) # Adds 1 by 1 blocks on position [x,y]
-bigblocks = np.array([[10,20,20,30]]) # Adds bigger blocks of size [xstart,xend, ystart,yend]
+bigblocks = np.array([[10,20,20,30],[40,45,40,45]]) # Adds bigger blocks of size [xstart,xend, ystart,yend]
 e = np.array([[0,1,1,0,-1,-1,-1,0,1], [0,0,1,1,1,0,-1,-1,-1]])
 
 grid=init_grid(Nxgrid,Nygrid,dens,blocks,bigblocks)
 for i in xrange(0,timesteps):
     grid=update(grid,relaxt,pressgradvel,blocks,bigblocks,e)
 #print grid
-velocity=calc_velocity(grid)
+velocity=calc_velocity(grid,blocks,bigblocks)
 plt.figure(1)
 plt.plot(velocity[50,:,0],np.arange(velocity.shape[1]),'r+')
 plt.xlabel('Velocity in x direction') 
