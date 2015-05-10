@@ -22,7 +22,6 @@ plt.plot(velocity[50,:,0],np.arange(velocity.shape[1]),'r+')
 plt.xlabel('Velocity in x direction') 
 plt.ylabel('Position in y') 
 plt.title('Flow profile in pipe')
-plt.show()
 
 plt.figure(2)
 tempvel = np.copy(velocity)
@@ -32,3 +31,4 @@ l,r,b,t = axis()
 dx, dy = r-l, t-b
 axis([l-0.05*dx, r+0.05*dx, b-0.05*dy, t+0.05*dy])
 title('velocity profile')
+plt.show()
