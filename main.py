@@ -8,12 +8,13 @@ dens=1
 timesteps=1000
 pressgradvel=0.005
 relaxt=3.3
-blocks = np.array([[40,20],[30,40],[10,10],[80,20]]) # Adds 1 by 1 blocks on position [x,y]
+blocks = np.array([[30,30],[60,40],[80,20]]) # Adds 1 by 1 blocks on position [x,y]
+bigblocks = np.array([[10,20],[20,30]]) # Adds bigger blocks of size [xstart,xend] by [ystart,yend]
 e = np.array([[0,1,1,0,-1,-1,-1,0,1], [0,0,1,1,1,0,-1,-1,-1]])
 
-grid=init_grid(Nxgrid,Nygrid,dens,blocks)
+grid=init_grid(Nxgrid,Nygrid,dens,blocks,bigblocks)
 for i in xrange(0,timesteps):
-    grid=update(grid,relaxt,pressgradvel,blocks,e)
+    grid=update(grid,relaxt,pressgradvel,blocks,bigblocks,e)
 #print grid
 velocity=calc_velocity(grid)
 plt.figure(1)
