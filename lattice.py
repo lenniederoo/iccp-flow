@@ -6,7 +6,10 @@ import copy
 def init_grid(Nxgrid,Nygrid,dens,blocks,bigblocks):
   grid=np.ones((Nxgrid,Nygrid,9),dtype=float)*dens/9
   for i in range (len(bigblocks)):
-    grid[bigblocks[i,0]:bigblocks[i,1],bigblocks[i,2]:bigblocks[i,3],:]=0
+    grid[bigblocks[i,0],bigblocks[i,2]:bigblocks[i,3],:]=0
+    grid[bigblocks[i,1],bigblocks[i,2]:bigblocks[i,3],:]=0
+    grid[bigblocks[i,0]:bigblocks[i,1],bigblocks[i,2],:]=0
+    grid[bigblocks[i,0]:bigblocks[i,1],bigblocks[i,3],:]=0
   for i in range (len(blocks)):
     grid[blocks[i,0],blocks[i,1],:]=0
   return grid
