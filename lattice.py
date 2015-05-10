@@ -5,7 +5,8 @@ import copy
 
 def init_grid(Nxgrid,Nygrid,dens,blocks,bigblocks):
   grid=np.ones((Nxgrid,Nygrid,9),dtype=float)*dens/9
-  grid[bigblocks[0,0]:bigblocks[0,1],bigblocks[1,0]:bigblocks[1,1],:]=0
+  for i in range (len(bigblocks)):
+    grid[bigblocks[i,0]:bigblocks[i,1],bigblocks[i,2]:bigblocks[i,3],:]=0
   for i in range (len(blocks)):
     grid[blocks[i,0],blocks[i,1],:]=0
   return grid
@@ -16,10 +17,11 @@ def move(grid,blocks,bigblocks,e):
   clonedgrid=copy.deepcopy(grid)
   for i in range(9):
     grid[:,0,i]=clonedgrid[:,0,((i+3)%8) +1]
+    grid[:,grid.shape[1]-1,i]=clonedgrid[:,grid.shape[1]-1,((i+3)%8) +1]
     for j in range(len(blocks)):      
-      grid[:,grid.shape[1]-1,i]=clonedgrid[:,grid.shape[1]-1,((i+3)%8) +1]
       grid[blocks[j,0],blocks[j,1],i]=clonedgrid[blocks[j,0],blocks[j,1],((i+3)%8) +1]
-    grid[bigblocks[0,0]:bigblocks[0,1],bigblocks[1,0]:bigblocks[1,1],:]=clonedgrid[blocks[j,0],blocks[j,1],((i+3)%8) +1]
+    for j in range(len(bigblocks)):      
+      grid[bigblocks[j,0]:bigblocks[j,1],bigblocks[j,2]:bigblocks[j,3],i]=clonedgrid[bigblocks[j,0]:bigblocks[j,1],bigblocks[j,2]:bigblocks[j,3],((i+3)%8) +1]
   return grid  
   
 def update(grid,relaxt,pressgradvel,blocks,bigblocks,e):
@@ -38,7 +40,8 @@ def add_pressure_grad(grid,pressgradvel,blocks,bigblocks):
     velocity[:,1:velocity.shape[1]-1,0]+=pressgradvel
     for p in range (len(blocks)):  
       velocity[blocks[p,0],blocks[p,1],0]-=pressgradvel
-    velocity[bigblocks[0,0]:bigblocks[0,1],bigblocks[1,0]:bigblocks[1,1],0]-=pressgradvel
+    for p in range (len(bigblocks)):  
+      velocity[bigblocks[p,0]:bigblocks[p,1],bigblocks[p,2]:bigblocks[p,3],0]-=pressgradvel
     return velocity
     
 def calc_eq(grid,pressgradvel,blocks,bigblocks,e):

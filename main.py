@@ -9,7 +9,7 @@ timesteps=1000
 pressgradvel=0.005
 relaxt=3.3
 blocks = np.array([[30,30],[60,40],[80,20]]) # Adds 1 by 1 blocks on position [x,y]
-bigblocks = np.array([[10,20],[20,30]]) # Adds bigger blocks of size [xstart,xend] by [ystart,yend]
+bigblocks = np.array([[10,20,20,30]]) # Adds bigger blocks of size [xstart,xend, ystart,yend]
 e = np.array([[0,1,1,0,-1,-1,-1,0,1], [0,0,1,1,1,0,-1,-1,-1]])
 
 grid=init_grid(Nxgrid,Nygrid,dens,blocks,bigblocks)
